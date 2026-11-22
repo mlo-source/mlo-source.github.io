@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.sonora.player",
+      "sha256_cert_fingerprints": [
+        "73:D1:9E:91:B6:64:E2:D9:A9:F2:FC:4A:D3:A5:ED:72:6A:B1:4F:6F:31:EE:A4:1A:CB:EC:FE:75:C7:DA:7B:C4"
+      ]
+    }
+  }
+]
