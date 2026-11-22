@@ -47,19 +47,25 @@ function renderInvite(){
   tr:{title:'Davet edildin',text:'Daveti Sonora’da açmak için düğmeye dokun.',open:'Sonora’da aç',copy:'Bağlantıyı kopyala',copied:'Kopyalandı. Sonora’da Birlikte → Daveti aç bölümüne yapıştır.',hint:'Sonora henüz yüklü değil mi? Bağlantıyı gönderen kişiden uygulamayı iste.',bad:'Bu bağlantı eksik',badText:'Lütfen bağlantıyı tekrar göndermesini iste.',f:'Arkadaş daveti',r:'Dinleme odası',p:'Ortak çalma listesi',s:'Çalma listesi'},
   th:{title:'คุณได้รับคำเชิญ',text:'แตะปุ่มเพื่อเปิดคำเชิญใน Sonora',open:'เปิดใน Sonora',copy:'คัดลอกลิงก์',copied:'คัดลอกแล้ว วางใน Sonora ที่ ด้วยกัน → เปิดคำเชิญ',hint:'ยังไม่ได้ติดตั้ง Sonora? ขอแอปจากผู้ที่ส่งลิงก์ให้คุณ',bad:'ลิงก์นี้ไม่สมบูรณ์',badText:'โปรดขอให้ส่งลิงก์ให้อีกครั้ง',f:'คำเชิญเป็นเพื่อน',r:'ห้องฟังเพลง',p:'เพลย์ลิสต์ที่แชร์',s:'เพลย์ลิสต์'}
  };
+ var LAN={
+  de:{kind:'PC und Handy koppeln',title:'Verbinde dein Handy mit Sonora',text:'Öffne diesen Link auf dem Handy mit installiertem Sonora. Handy und PC müssen im selben WLAN sein.',hint:'Die Kopplung wird erst nach der Prüfcode-Bestätigung auf beiden Geräten gespeichert.',copy:'Kopplungscode kopieren',copied:'Kopiert. Am Handy in Sonora Connect unter „Code eingeben“ einfügen.'},
+  en:{kind:'Pair PC and phone',title:'Connect your phone to Sonora',text:'Open this link on a phone with Sonora installed. The phone and PC must use the same Wi-Fi.',hint:'Pairing is saved only after you confirm the check code on both devices.',copy:'Copy pairing code',copied:'Copied. On the phone, paste it under Enter code in Sonora Connect.'},
+  tr:{kind:'PC ve telefonu eşleştir',title:'Telefonunu Sonora’ya bağla',text:'Bu bağlantıyı Sonora yüklü telefonda aç. Telefon ve PC aynı Wi-Fi ağında olmalı.',hint:'Eşleştirme ancak kontrol kodu iki cihazda da onaylandıktan sonra kaydedilir.',copy:'Eşleştirme kodunu kopyala',copied:'Kopyalandı. Telefonda Sonora Connect içindeki kod girişine yapıştır.'},
+  th:{kind:'จับคู่พีซีกับโทรศัพท์',title:'เชื่อมต่อโทรศัพท์กับ Sonora',text:'เปิดลิงก์นี้บนโทรศัพท์ที่ติดตั้ง Sonora โทรศัพท์และพีซีต้องใช้ Wi-Fi เดียวกัน',hint:'การจับคู่จะถูกบันทึกเมื่อยืนยันรหัสบนทั้งสองอุปกรณ์แล้วเท่านั้น',copy:'คัดลอกรหัสจับคู่',copied:'คัดลอกแล้ว วางรหัสใน Sonora Connect บนโทรศัพท์'}
+ };
  var lang=(navigator.language||'de').slice(0,2).toLowerCase(),t=T[lang]||T.de,$=function(id){return document.getElementById(id)};
- document.documentElement.lang=T[lang]?lang:'de';
+ document.documentElement.lang=T[lang]?lang:'de';var l=LAN[lang]||LAN.de;
  var hash='';try{hash=decodeURIComponent(location.hash.slice(1))}catch(e){}var sn='SN-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}';
- var m=new RegExp('^(r|p|s|f)/'+sn+'$').exec(hash)||/^(room)\?code=sonora1\.[a-f0-9]{32}\.[a-f0-9]{32}$/.exec(hash)||/^(playlist)\?code=sonora2\.[a-f0-9]{32}\.[a-f0-9]{32}\.[a-f0-9]{32}$/.exec(hash);
+ var m=/^(l)\/sonora-lan1\.[A-Za-z0-9_-]{20,1500}$/.exec(hash)||new RegExp('^(r|p|s|f)/'+sn+'$').exec(hash)||/^(room)\?code=sonora1\.[a-f0-9]{32}\.[a-f0-9]{32}$/.exec(hash)||/^(playlist)\?code=sonora2\.[a-f0-9]{32}\.[a-f0-9]{32}\.[a-f0-9]{32}$/.exec(hash);
  document.body.className='';$('kind').textContent='';$('status').textContent='';
  $('hint').textContent=t.hint;
  if(!m){document.body.className='bad';$('title').textContent=t.bad;$('text').textContent=t.badText;return}
- var kind={r:'r',room:'r',p:'p',playlist:'p',s:'s',f:'f'}[m[1]],app='sonora://join/'+hash;
+ var kind={r:'r',room:'r',p:'p',playlist:'p',s:'s',f:'f',l:'l'}[m[1]],app='sonora://join/'+hash;
  var android=/Android/i.test(navigator.userAgent),target=android?'intent://join/'+hash+'#Intent;scheme=sonora;package=app.sonora.player;end':app;
- $('kind').textContent=t[kind];$('title').textContent=t.title;$('text').textContent=t.text;
- var open=$('open');open.textContent=t.open;open.href=target;
- var copy=$('copy');copy.textContent=t.copy;
- copy.onclick=function(){var done=function(){$('status').textContent=t.copied};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(location.href).then(done,function(){prompt('',location.href)});else prompt('',location.href)};
+ $('kind').textContent=kind==='l'?l.kind:t[kind];$('title').textContent=kind==='l'?l.title:t.title;$('text').textContent=kind==='l'?l.text:t.text;if(kind==='l')$('hint').textContent=l.hint;
+ var open=$('open');open.textContent=t.open;open.href=target;open.style.display=kind==='l'&&!android?'none':'';
+ var copy=$('copy'),copied=kind==='l'?hash.slice(2):location.href;copy.textContent=kind==='l'?l.copy:t.copy;
+ copy.onclick=function(){var done=function(){$('status').textContent=kind==='l'?l.copied:t.copied};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(copied).then(done,function(){prompt('',copied)});else prompt('',copied)};
  // External app launches require an explicit tap, including in Android browsers.
 }
 renderInvite();
